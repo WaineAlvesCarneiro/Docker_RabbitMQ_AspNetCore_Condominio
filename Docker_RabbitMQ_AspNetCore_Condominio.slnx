@@ -1,0 +1,21 @@
+<Solution>
+  <Folder Name="/Itens de Solução/">
+    <File Path=".dockerignore" />
+    <File Path=".env" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="Consultas SQL das Tabelas.sql" />
+    <File Path="docker-compose.yml" />
+    <File Path="Infraestrutura-Base.ps1" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="CondominioSaaS.API/CondominioSaaS.API.csproj" Id="2cd7744e-7600-41da-92f3-934d2e11a965" />
+  <Project Path="CondominioSaaS.Application.Tests/CondominioSaaS.Application.Tests.csproj" Id="6bcf4719-eae7-4d3b-940d-cb28e17019db" />
+  <Project Path="CondominioSaaS.Application/CondominioSaaS.Application.csproj" Id="e18f2595-dfd2-4622-85cd-8cb77421d66f" />
+  <Project Path="CondominioSaaS.Configurations/CondominioSaaS.Configurations.csproj" Id="77a8b8cd-4e35-45c9-8338-2cf9f6f6f806" />
+  <Project Path="CondominioSaaS.Domain.Tests/CondominioSaaS.Domain.Tests.csproj" Id="b489b4db-c6e5-453c-99bc-8cfa6a8ff7a9" />
+  <Project Path="CondominioSaaS.Domain/CondominioSaaS.Domain.csproj" Id="098dc7e2-fb3b-400e-bbea-10b7b675d88d" />
+  <Project Path="CondominioSaaS.Infrastructure/CondominioSaaS.Infrastructure.csproj" Id="f1cbf8fc-d419-41ce-8729-8b1c3d428607" />
+  <Project Path="CondominioSaaS.Integration.Tests/CondominioSaaS.Integration.Tests.csproj" Id="5f7e0a39-d8f2-4e76-a6b5-466e7279db78" />
+  <Project Path="CondominioSaaS.Worker/CondominioSaaS.Worker.csproj" Id="b5627f1b-c466-4266-af1b-d718ca87bb55" />
+</Solution>
