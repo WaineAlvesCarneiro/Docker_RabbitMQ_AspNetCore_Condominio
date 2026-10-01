@@ -15,7 +15,9 @@ public static class ApplicationBuilderExtensions
         });
 
         app.UseCors("AllowFrontend");
-        app.UseHttpsRedirection();
+
+        if (!env.IsDevelopment())
+            app.UseHttpsRedirection();
 
         app.UseAuthentication();
         app.UseAuthorization();

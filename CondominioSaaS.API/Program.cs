@@ -46,6 +46,6 @@ app.UseAuthorization();
 app.MapEnumsEndpoints();
 app.MapImovelEndpoints();
 
-app.Run("http://0.0.0.0:8081");
+app.Run();
 
 public partial class Program { }
