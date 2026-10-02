@@ -4,8 +4,8 @@ $ErrorActionPreference = "Stop"
 # Carregar variáveis do .env
 Get-Content .env | ForEach-Object {
     if ($_ -match "^(.*?)=(.*)$") {
-        $name = $matches[1]
-        $value = $matches[2]
+        $name  = $matches[1].Trim()
+        $value = $matches[2].Trim()
         [System.Environment]::SetEnvironmentVariable($name, $value)
     }
 }
@@ -14,13 +14,11 @@ Get-Content .env | ForEach-Object {
 $networkName     = $env:DOCKER_NETWORK
 $sqlContainer    = $env:SQL_CONTAINER
 $rabbitContainer = $env:RABBIT_CONTAINER
-$devopsContainer = $env:DEVOPS_CONTAINER
+#$devopsContainer = $env:DEVOPS_CONTAINER
 $sqlPassword     = $env:SQL_SA_PASSWORD
 $sqlUser         = $env:SQL_SA_USER
 
 Write-Host "🚀 Iniciando o provisionamento da Infraestrutura Base..." -ForegroundColor Cyan
-Write-Host "🔍 Validando se o Kubernetes está habilitado no Docker Desktop..." -ForegroundColor Yellow
-
 # Testa se o contexto docker-desktop existe
 try {
     $contexts = kubectl config get-contexts 2>$null
@@ -38,19 +36,6 @@ if (-not $networkExists) {
     Write-Host "✅ Rede Docker '$networkName' já existe." -ForegroundColor Gray
 }
 
-# 2. CRIAR VOLUMES DOCKER
-$volumes = @($env:SQL_VOLUME, $env:RABBIT_VOLUME)
-foreach ($vol in $volumes) {
-    $volExists = docker volume ls --format '{{.Name}}' | Where-Object { $_ -eq $vol }
-    if (-not $volExists) {
-        Write-Host "💾 Criando volume Docker '$vol'..." -ForegroundColor Yellow
-        docker volume create $vol | Out-Null
-        Write-Host "✅ Volume Docker '$vol' criado." -ForegroundColor Green
-    } else {
-        Write-Host "✅ Volume Docker '$vol' já existe." -ForegroundColor Gray
-    }
-}
-
 # 3. SUBIR SQL SERVER 2022
 $sqlExists = docker ps -a --format '{{.Names}}' | Where-Object { $_ -eq $sqlContainer }
 if (-not $sqlExists) {
@@ -61,7 +46,7 @@ if (-not $sqlExists) {
         --restart unless-stopped `
         -e 'ACCEPT_EULA=Y' `
         -e "MSSQL_SA_PASSWORD=$sqlPassword" `
-        -v $env:SQL_VOLUME:/var/opt/mssql `
+        --mount source=$env:SQL_VOLUME,target=/var/opt/mssql `
         -p 1433:1433 `
         mcr.microsoft.com/mssql/server:2022-latest | Out-Null
 } else {
@@ -74,13 +59,13 @@ $rabbitExists = docker ps -a --format '{{.Names}}' | Where-Object { $_ -eq $rabb
 if (-not $rabbitExists) {
     Write-Host "🐇 Subindo container do RabbitMQ..." -ForegroundColor Yellow
     docker run -d `
-        --name $rabbitContainer `
-        --network $networkName `
-        --restart unless-stopped `
-        -v $env:RABBIT_VOLUME:/var/lib/rabbitmq `
-        -p 5672:5672 `
-        -p 15672:15672 `
-        rabbitmq:3-management | Out-Null
+      --name $rabbitContainer `
+      --network $networkName `
+      --restart unless-stopped `
+      --mount source=$env:RABBIT_VOLUME,target=/var/lib/rabbitmq `
+      -p 5672:5672 `
+      -p 15672:15672 `
+      rabbitmq:3-management | Out-Null
 } else {
     Write-Host "✅ Container '$rabbitContainer' já existe. Garantindo que está rodando..." -ForegroundColor Gray
     docker start $rabbitContainer | Out-Null
