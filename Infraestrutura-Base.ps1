@@ -1,8 +1,8 @@
 # Fase‑1: Infraestrutura base
 $ErrorActionPreference = "Stop"
 
-# Carregar variáveis do .env.prod
-Get-Content .env.prod | ForEach-Object {
+# Carregar variáveis do .env
+Get-Content .env | ForEach-Object {
     if ($_ -match "^(.*?)=(.*)$") {
         $name  = $matches[1].Trim()
         $value = $matches[2].Trim()
